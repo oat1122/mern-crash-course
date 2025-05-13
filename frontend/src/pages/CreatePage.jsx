@@ -6,9 +6,11 @@ import {
   VStack,
   Heading,
   Button,
+  useToast,
 } from "@chakra-ui/react";
 import { useState } from "react"
 import Product from './../../../backend/models/product.model';
+import { uesProductStore } from "../store/product";
 
 const CreatePage = () => {
   const [newProduct, setNewProduct] = useState({
@@ -17,8 +19,29 @@ const CreatePage = () => {
     image: ""
   })
 
-  const handleAddProduct = () =>{
-    console.log(newProduct)
+  const toast = useToast();
+
+  const {createProduct} = uesProductStore()
+  const handleAddProduct = async() =>{
+   const{success,message} = await createProduct(newProduct)
+   if(!success){
+    toast({
+      title: 'Error',
+      description: message,
+      status: 'error',
+      
+      isClosable: true,
+    })
+   }else{
+    toast({
+      title: 'Success',
+      description: message,
+      status: 'success',
+      
+      isClosable: true,
+    })
+   } 
+   setNewProduct({name: "", price: "", image: ""}) // reset the newProduct
   }
 
   return (
